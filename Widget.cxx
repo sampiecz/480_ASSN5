@@ -26,5 +26,5 @@ Widget::Widget(int parentNum, int widgetNum)
 
 void Widget::print()
 {
-  cout << "P" << this->parentNum << " W" << this->widgetNum << endl; 
+  cout << "\tP" << this->parentNum << " W" << this->widgetNum << endl; 
 }

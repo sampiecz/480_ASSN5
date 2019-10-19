@@ -9,103 +9,153 @@ Date Due: Oct 25, 2019 Purpose: Priority Scheduling Simulation.
 ************************************************************/
 #include "Constants.h"
 #include <iostream>
+#include <queue>
+#include <pthread.h>
+
+using std::cout;
+using std::endl;
+using std::queue;
+
+// Global Vars
+pthread_t consumers[C_NUMBER];
+pthread_t producers[P_NUMBER];
+queue<Widget*> buffer;
+sem_t NOT_EMPTY = 0;
+sem_t NOT_FULL = BUFFER_SIZE; 
+pthread_mutex_t mutex;
 
 // Prototypes
 void Insert(int threadID);
 void Remove(int threadID);
-void Produce(int threadID);
-void Consume(int threadID);
+int Produce(int threadID);
+int Consume(int threadID);
+void printBuffer();
+void printStatus();
 
 int main()
 {
-  // Create an array of C_NUMBER threads to be consumers
-  pthread_t consumers[C_NUMBER];
-
-  // Create an array of P_NUMBER threads to be producers
-  pthread_t producers[P_NUMBER];
-
   // To create Producer do
-  pthread.create(Produce());
+  pthread_create(Produce());
 
   // To do create Consumer do
-  pthread.create(Consume());
+  pthread_create(Consume());
 
   // Loop and wait for threads to terminate
-  for ()
+  for (i)
   {
     pthread_join();
   }
 
   // Kill all semaphores and mutexes
-  sem_destroy();
-  mutex_destroy();
-
+  sem_destroy(*NOT_EMPTY);
+  sem_destroy(*NOT_FULL);
+  pthread_mutex_destroy(*mutex);
 
   return 0;
 }
 
+
 // Function Definitions
 void Insert(int threadID)
 {
-  cout << "Producer " << thing << " inserted a Widget." << endl; 
-  cout << "Total is now " << thing2 << " ." << endl;
-  cout << "Buffer contains :" << endl;
-  for ( auto x : buffer )
+  if (NOT_FULL != 0)
   {
-    x->print();
+    printStatus(true);
+    pthread_mutex_lock(*mutex);
+    buffer.push_back(new Widget(threadID, counter));
+    counter++;
+    NOT_FULL--;
+    pthread_mutex_unlock(*mutex);
+  }
+  else
+  {
+    wait();
   }
 }
 
 void Remove(int threadID)
 {
-  cout << "Consumer " << thing << " removed a Widget." << endl; 
-  cout << "Total is now " << thing2 << " ." << endl;
-  cout << "Buffer contains :" << endl;
-  for ( auto x : buffer )
+  if (NOT_EMPTY != 0)
   {
-    x->print();
+    printStatus(false);
+    pthread_mutex_lock(*mutex);
+    buffer.pop(new Widget(threadID, counter));
+    counter--;
+    NOT_EMPTY--;
+    pthread_mutex_unlock(*mutex);
+  }
+  else
+  {
+    wait();
   }
 }
 
-void Produce(int threadID)
+int Produce(int threadID)
 {
   try
   {
     sleep(1);
     for (int i = 0; i < P_STEPS; i++)
     {
-      wait(NotFull);
+      wait(NOT_FULL);
       Insert();
-      post(NotEmpty);
+      post(NOT_EMPTY);
     }
-    // need to call pthread_exit()
+    pthread_exit();
     return 0;
   }
   catch (...)
   {
-    // bad thing happened
+    cout << "Produce failed!" << endl;
     return 1;
   }
 }
 
-void Consume(int threadID)
+int Consume(int threadID)
 {
   try
   {
     sleep(1);
     for (int i = 0; i < C_STEPS; i++)
     {
-      wait(NotEmpty);
+      wait(NOT_EMPTY);
       Remove();
-      post(NotFull);
+      post(NOT_FULL);
     }
-    // need to call pthread_exit()
+    pthread_exit();
     return 0
   }
   catch (...)
   {
-    // bad thing happened
+    cout << "Consume failed!" << endl;
     return 1;
   }
 }
 
+void printBuffer()
+{
+  queue<Widget*> printBuffer(buffer);
+  for ( auto x : printBuffer)
+  {
+    x->print();
+  }
+}
+
+void printStatus(bool whichOne)
+{
+  if (whichOne)
+  {
+    cout << "Producer " << thing << " inserted a Widget." << endl; 
+    cout << "Total is now " << thing2 << " ." << endl;
+    cout << "Buffer contains :" << endl;
+    printBuffer();
+  }
+  else
+  {
+    cout << "Consumer " << thing << " removed a Widget." << endl; 
+    cout << "Total is now " << thing2 << " ." << endl;
+    cout << "Buffer contains :" << endl;
+    printBuffer();
+  }
+
+}
