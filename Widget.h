@@ -13,10 +13,10 @@
 
 class Widget {
   public:
-    Widget();
+    Widget(int, int);
     void print();
   private:
-    int parentNum;
+    int producerNum;
     int widgetNum;
 };
 

@@ -10,21 +10,17 @@
  ************************************************************/
 #include "Widget.h"
 #include <iostream>
-#include <vector>
-#include <string>
 
 using std::cout;
 using std::endl;
-using std::vector;
-using std::string;
 
-Widget::Widget(int parentNum, int widgetNum)
+Widget::Widget(int producerNum, int widgetNum)
 {
-  this->parentNum = parentNum;
+  this->producerNum = producerNum;
   this->widgetNum = widgetNum;
 }
 
 void Widget::print()
 {
-  cout << "\tP" << this->parentNum << " W" << this->widgetNum << endl; 
+  cout << "\tP" << this->producerNum << " W" << this->widgetNum << endl; 
 }
