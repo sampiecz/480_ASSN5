@@ -22,5 +22,5 @@ Widget::Widget(int producerNum, int widgetNum)
 
 void Widget::print()
 {
-  cout << "\tP" << this->producerNum << " W" << this->widgetNum << endl; 
+  cout << "P" << this->producerNum << "W" << this->widgetNum << " "; 
 }

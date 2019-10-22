@@ -41,10 +41,13 @@ void printStatus(bool, int);
 
 int main()
 {
+	cout << "Simulation of Producer and Consumers" << endl;
+
   // Init sems & mutex
   sem_init(&NOT_EMPTY, 0, 35);
   sem_init(&NOT_FULL, 0, 0);
   pthread_mutex_init(&mutex, NULL);
+	cout << "The semaphores and mutex have been initialized." << endl;
 
   // Iterate and create producers
   for (int i = 0; i < P_NUMBER - 1; i++)
@@ -70,11 +73,15 @@ int main()
     pthread_join(consumers[i], NULL);
   }
 
+	cout << "All the producer and consumer threads have been closed." << endl;
+
   // Kill all semaphores and mutexes
   sem_destroy(&NOT_EMPTY);
   sem_destroy(&NOT_FULL);
   pthread_mutex_destroy(&mutex);
   pthread_exit(NULL);
+
+	cout << "The semaphores and mutexes have been deleted." << endl;
 
   return 0;
 }
@@ -83,44 +90,26 @@ int main()
 // Function Definitions
 void Insert(int threadID, int widgetNum)
 {
-  //if (NOT_FULL != 0)
   if (buffer.size() < 35)
   {
-    cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII" << endl;
-    cout << "Locking mutex on INSERT...." << endl;
     pthread_mutex_lock(&mutex);
-    cout << "Locked...." << endl;
     Widget* theWidget = new Widget(threadID, widgetNum);
     buffer.push(theWidget);
-    cout << "Widget pushed back...." << endl;
     counter++;
-    cout << "Buffer count incremented now at : " << counter << endl;
     printStatus(true, threadID);
-    cout << "Unlocking mutex on INSERT...." << endl;
     pthread_mutex_unlock(&mutex);
-    cout << "Unlocked...." << endl;
-    cout << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII" << endl;
   }
 }
 
 void Remove(int threadID)
 {
-  //if (NOT_EMPTY != 0)
   if (!buffer.empty())
   {
-    cout << "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR" << endl;
-    cout << "Locking mutex on REMOVE...." << endl;
     pthread_mutex_lock(&mutex);
-    cout << "Locked...." << endl;
     buffer.pop();
-    cout << "Widget popped...." << endl;
     counter--;
-    cout << "Buffer count decremented now at : " << counter << endl;
     printStatus(false, threadID);
-    cout << "Unlocking mutex on REMOVE...." << endl;
     pthread_mutex_unlock(&mutex);
-    cout << "Unlocked...." << endl;
-    cout << "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR" << endl;
   }
 }
 
@@ -164,17 +153,17 @@ void printStatus(bool whichOne, int num)
 {
   if (whichOne)
   {
-    cout << "Producer " << num << " inserted a Widget." << endl; 
-    cout << "Total is now " << counter << " ." << endl;
-    cout << "Buffer contains :" << endl;
+    cout << "Producer " << num << " inserted one item. Total is now " << counter << "." << endl; 
+    cout << "Buffer now contains :";
     printBuffer();
+		cout << "\n" << endl;
   }
   else
   {
-    cout << "Consumer " << num << " removed a Widget." << endl; 
-    cout << "Total is now " << counter << " ." << endl;
-    cout << "Buffer contains :" << endl;
+    cout << "Consumer " << num << " removed one item. Total is now " << counter << "." << endl; 
+    cout << "Buffer now contains :";
     printBuffer();
+		cout << "\n" << endl;
   }
 
 }
