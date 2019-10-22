@@ -7,7 +7,7 @@
 CCFLAGS = -ggdb -Wall -std=c++11
 
 Assign5: Assign5.o Widget.o
-	g++ $(CCFLAGS) -pthread -o Assign5 Assign5.o 
+	g++ $(CCFLAGS) -pthread -o Assign5 Assign5.o Widget.o
 
 Assign5.o: Assign5.cxx  Widget.h 
 	g++ $(CCFLAGS) -pthread -c Assign5.cxx

@@ -47,25 +47,25 @@ int main()
   pthread_mutex_init(&mutex, NULL);
 
   // Iterate and create producers
-  for (int i = 0; i < P_NUMBER; i++)
+  for (int i = 0; i < P_NUMBER - 1; i++)
   {
     pthread_create(&producers[i], NULL, Produce, (void*) i);
   }
 
   // Iterate and create consumers
-  for (int i = 0; i < C_NUMBER; i++)
+  for (int i = 0; i < C_NUMBER - 1; i++)
   {
     pthread_create(&consumers[i], NULL, Consume, (void*) i);
   }
 
   // Terminate producer threads
-  for (int i = 0; i < P_NUMBER; i++)
+  for (int i = 0; i < P_NUMBER - 1; i++)
   {
     pthread_join(producers[i], NULL);
   }
 
   // Terminate consumer threads
-  for (int i = 0; i < C_NUMBER; i++)
+  for (int i = 0; i < C_NUMBER - 1; i++)
   {
     pthread_join(consumers[i], NULL);
   }
@@ -127,7 +127,7 @@ void Remove(int threadID)
 void * Produce(void * producerNum)
 {
   long int threadID = (long int) producerNum;
-  for (int i = 0; i < P_STEPS; i++)
+  for (int i = 0; i < P_STEPS - 1; i++)
   {
     sem_wait(&NOT_FULL);
     Insert(threadID, i);
@@ -140,7 +140,7 @@ void * Produce(void * producerNum)
 void * Consume(void * consumerNum)
 {
   long int threadID = (long int) consumerNum;
-  for (int i = 0; i < C_STEPS; i++)
+  for (int i = 0; i < C_STEPS - 1; i++)
   {
     sem_wait(&NOT_EMPTY);
     Remove(threadID);
